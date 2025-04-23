@@ -28,46 +28,7 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
+  display: 'flex';
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
@@ -78,9 +39,8 @@ h1 {
   line-height: 1.1;
 }
 
-/* Scoped button styles to exclude Shadcn Checkbox */
-button:not([data-state]), /* Exclude buttons with data-state (used by Checkbox) */
-button:not(.peer) { /* Exclude elements with peer class (used by Checkbox) */
+/* Scoped button styles to exclude Shadcn Checkbox, but allow Shadcn Button */
+button:not([data-state]):not(.peer):not(.select-columns-button) {
   border-radius: 8px;
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
@@ -91,11 +51,11 @@ button:not(.peer) { /* Exclude elements with peer class (used by Checkbox) */
   cursor: pointer;
   transition: border-color 0.25s;
 }
-button:hover:not([data-state]):not(.peer) {
+button:hover:not([data-state]):not(.peer):not(.select-columns-button) {
   border-color: #646cff;
 }
-button:focus:not([data-state]):not(.peer),
-button:focus-visible:not([data-state]):not(.peer) {
+button:focus:not([data-state]):not(.peer):not(.select-columns-button),
+button:focus-visible:not([data-state]):not(.peer):not(.select-columns-button) {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
@@ -107,7 +67,7 @@ button:focus-visible:not([data-state]):not(.peer) {
   a:hover {
     color: #747bff;
   }
-  button {
+  button:not([data-state]):not(.peer):not(.select-columns-button) {
     background-color: #f9f9f9;
   }
 }
@@ -167,8 +127,6 @@ button:focus-visible:not([data-state]):not(.peer) {
     --chart-5: 340 75% 55%;
   }
 }
-
-
 
 @layer base {
   * {
