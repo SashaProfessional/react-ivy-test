@@ -1,11 +1,5 @@
-export interface Employee {
-    name: string;
-    jobTitle: string;
-    age: number;
-    nickname: string;
-    isEmployee: boolean;
-  }
-  
+import { Employee } from "../interfaces/employee";
+ 
   export const employees: Employee[] = [
     { name: "Giacomo Guilizzoni", jobTitle: "Founder & CEO", age: 40, nickname: "Peldi", isEmployee: true },
     { name: "Marco Botton", jobTitle: "Tuttofare", age: 38, nickname: "Botton", isEmployee: false },

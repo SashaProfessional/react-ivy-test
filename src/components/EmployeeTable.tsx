@@ -8,38 +8,28 @@ import {
   flexRender,
 } from '@tanstack/react-table';
 import { useVirtualizer } from '@tanstack/react-virtual';
+
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Checkbox } from '@/components/ui/checkbox';
+
+import { Columns } from '../enums/columns';
+import { AccessorKey } from '../enums/accessorKeys';
+import { CustomColumnMeta } from '../interfaces/customColumnMeta';
 import { employees, Employee } from './mockData';
-
-// Enum for columns
-export enum Column {
-  NameJobTitle = 'Name (job title)',
-  Age = 'Age',
-  Nickname = 'Nickname',
-  Employee = 'Employee',
-}
-
-// Enum for accessor keys
-export enum AccessorKey {
-  Name = 'name',
-  Age = 'age',
-  Nickname = 'nickname',
-  IsEmployee = 'isEmployee',
-}
+import { ROW_HEIGHT } from './constants/app';
 
 export function EmployeeTable() {
   const [data, setData] = useState<Employee[]>(employees);
   const [globalFilter, setGlobalFilter] = useState('');
   const [columnVisibility, setColumnVisibility] = useState({});
 
-  const columns: ColumnDef<Employee>[] = useMemo(
+  const columns: ColumnDef<Employee, CustomColumnMeta>[] = useMemo(
     () => [
       {
         accessorKey: AccessorKey.Name,
-        header: Column.NameJobTitle,
+        header: Columns.NameJobTitle,
         cell: ({ row }) => (
           <div>
             <div>{row.original.name}</div>
@@ -50,18 +40,18 @@ export function EmployeeTable() {
       },
       {
         accessorKey: AccessorKey.Age,
-        header: Column.Age,
+        header: Columns.Age,
         meta: { align: 'right' },
         enableSorting: true,
       },
       {
         accessorKey: AccessorKey.Nickname,
-        header: Column.Nickname,
+        header: Columns.Nickname,
         enableSorting: false,
       },
       {
         accessorKey: AccessorKey.IsEmployee,
-        header: Column.Employee,
+        header: Columns.Employee,
         cell: ({ row }) => (
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <Checkbox
@@ -99,13 +89,10 @@ export function EmployeeTable() {
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLTableSectionElement>(null);
 
-  // Set a consistent row height based on the tallest content
-  const rowHeight = 59; // Matches the observed td height of 59px
-
   const rowVirtualizer = useVirtualizer({
     count: table.getRowModel().rows.length,
     getScrollElement: () => tableContainerRef.current,
-    estimateSize: () => rowHeight, // Use the fixed row height
+    estimateSize: () => ROW_HEIGHT,
     overscan: 5,
   });
 
@@ -177,12 +164,13 @@ export function EmployeeTable() {
                     style={{
                       border: '1px solid black',
                       padding: '5px',
-                      textAlign: header.column.columnDef.meta?.align || 'left',
+                      textAlign: (header.column.columnDef.meta as CustomColumnMeta)?.align || 'left',
                       backgroundColor: '#f5f5f5',
                       width: 'var(--td-width)',
                       position: 'sticky',
                       top: 0,
                       zIndex: 1,
+                      height: `${ROW_HEIGHT}px`, // Ensure header height matches row height
                     }}
                   >
                     <div
@@ -192,14 +180,21 @@ export function EmployeeTable() {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent:
-                          header.column.columnDef.meta?.align === 'right'
+                          (header.column.columnDef.meta as CustomColumnMeta)?.align === 'right'
                             ? 'flex-end'
-                            : header.column.columnDef.meta?.align === 'center'
+                            : (header.column.columnDef.meta as CustomColumnMeta)?.align === 'center'
                             ? 'center'
                             : 'flex-start',
                       }}
                     >
-                      {flexRender(header.column.columnDef.header, header.getContext())}
+                      {header.column.columnDef.header === Columns.NameJobTitle ? (
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                          <span>Name</span>
+                          <span>(job title)</span>
+                        </div>
+                      ) : (
+                        flexRender(header.column.columnDef.header, header.getContext())
+                      )}
                       {header.column.getCanSort() && (
                         <span style={{ marginLeft: '5px' }}>
                           {header.column.getIsSorted() === 'asc'
@@ -226,7 +221,7 @@ export function EmployeeTable() {
                     position: 'absolute',
                     top: 0,
                     transform: `translateY(${virtualRow.start + headerHeight}px)`,
-                    height: `${rowHeight}px`, // Explicitly set the tr height
+                    height: `${ROW_HEIGHT}px`,
                     width: '100%',
                   }}
                 >
@@ -236,9 +231,9 @@ export function EmployeeTable() {
                       style={{
                         border: '1px solid black',
                         padding: '5px',
-                        textAlign: cell.column.columnDef.meta?.align || 'left',
+                        textAlign: (cell.column.columnDef.meta as CustomColumnMeta)?.align || 'left',
                         width: 'var(--td-width)',
-                        height: `${rowHeight}px`, // Explicitly set the td height
+                        height: `${ROW_HEIGHT}px`,
                         boxSizing: 'border-box',
                       }}
                     >
