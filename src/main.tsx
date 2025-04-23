@@ -1,10 +1,12 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+
+// import EmployeeTable from './components/EmployeeTable'
+
 import './index.css'
-import App from './App.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    {/* <EmployeeTable /> */}
   </StrictMode>,
 )
